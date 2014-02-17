@@ -84,6 +84,6 @@ Public Class mainForm
     Private Sub mainForm_FormClosed(sender As Object, e As FormClosedEventArgs) Handles MyBase.FormClosed
         'Shell("cmd.exe /C netsh wlan set hostednetwork mode=disallow ssid=" + tbSSID.Text + _
         '          " key=" + mtbPasswd.Text + " keyUsage=temporary", aps, waitc)
-        Shell("cmd.exe /C netsh wlan stop hostednetwork", aps, waitc)
+        Shell("cmd.exe /K netsh wlan stop hostednetwork", aps, waitc)
     End Sub
 End Class
