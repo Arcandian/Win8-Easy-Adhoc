@@ -3,25 +3,24 @@ Imports System.Diagnostics.Process
 Public Class mainForm
 
     ' Only used for debug. "cperm" is used for show consoles during wlan creation process, 
-    ' "cargs" is used for command arguments, "cshow" is used to force show cmd windows
-    Private cperm As Boolean = True
+    ' "cargs" is used for command arguments
+    Private cperm As Boolean = False
     Private cargs As String = ""
-    Private cshow As Boolean = True
     Private startWLAN As String = "netsh wlan start hostednetwork"
     Private stopWLAN As String = "netsh wlan stop hostednetwork"
-    Private unsetWLANInfos As String = "netsh wlan set hostednetwork mode=disallow ssid=" + "" + " key=" + ""
+    Private unsetWLANInfos As String = "netsh wlan set hostednetwork mode=disallow ssid=  key="
 
     Private Sub mainForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
         ' Set form name with assembly informations
         Me.Text = My.Application.Info.AssemblyName & " v. " & My.Application.Info.Version.Major.ToString & "." _
-            & My.Application.Info.Version.Minor.ToString & My.Application.Info.Version.Build.ToString
+            & My.Application.Info.Version.Minor.ToString & My.Application.Info.Version.Build.ToString + "a"
 
         ' Set notify icon to invisible
         niMain.Visible = False
 
         ' If an existing hosted network is present, he's deactivate
-        runCmd(stopWLAN, cargs, cperm, cshow)
+        runCmd(stopWLAN, cargs, cperm)
 
     End Sub
 
@@ -41,10 +40,10 @@ Public Class mainForm
                     ' If all is OK, try to connect :
                     ' Start a console to execute a command which allow a new hosted network with,
                     ' in parameters, the name set in his TextBox, and same for the password
-                    runCmd(setWLANInfos, cargs, cperm, cshow)
+                    runCmd(setWLANInfos, cargs, cperm)
 
                     ' Start an other console to execute a command which really start the hosted network
-                    runCmd(startWLAN, cargs, cperm, cshow)
+                    runCmd(startWLAN, cargs, cperm)
 
                     ' Set a green label with a visual text indicates WLAN status
                     lblStatus.ForeColor = Color.Green
@@ -77,10 +76,10 @@ Public Class mainForm
         ElseIf btnSwitchWLAN.Text = "Stop " & tbSSID.Text & " adhoc WLAN" Then
 
             ' Execute a command which stop the hosted network
-            runCmd(stopWLAN, cargs, cperm, cshow)
+            runCmd(stopWLAN, cargs, cperm)
 
             ' Unset WLAN informations
-            runCmd(unsetWLANInfos, cargs, cperm, cshow)
+            runCmd(unsetWLANInfos, cargs, cperm)
 
             ' Change the label status in Orange color and notify if the WLAN is stopped
             lblStatus.ForeColor = Color.Orange
@@ -156,8 +155,8 @@ Public Class mainForm
     Private Sub mainForm_FormClosed(sender As Object, e As FormClosedEventArgs) Handles MyBase.FormClosed
 
         ' Stop hosted network & unset WLAN infos if this app is closed
-        runCmd(stopWLAN, cargs, cperm, cshow)
-        runCmd(unsetWLANInfos, cargs, cperm, cshow)
+        runCmd(stopWLAN, cargs, cperm)
+        runCmd(unsetWLANInfos, cargs, cperm)
 
     End Sub
 
@@ -167,9 +166,8 @@ Public Class mainForm
     ''' <param name="command">Command executed by cmd.exe</param>
     ''' <param name="args">Arguments used by the command</param>
     ''' <param name="ispermanent">If True, cmd.exe stay showed on the screen</param>
-    ''' <param name="showConsole">Optional. Indicates if consoles is showed. Default is false.</param>
     ''' <remarks>Inspirated by this topic : http://stackoverflow.com/questions/10261521/how-to-run-dos-cmd-command-prompt-commands-from-vb-net </remarks>
-    Private Sub runCmd(command As String, args As String, ispermanent As Boolean, Optional showConsole As Boolean = False)
+    Private Sub runCmd(command As String, args As String, ispermanent As Boolean)
 
         ' Create a new Process
         Dim p As Process = New Process()
@@ -182,9 +180,6 @@ Public Class mainForm
 
         ' Set executable filename for executes commands
         pi.FileName = "cmd.exe"
-
-        ' Set if windows cmd are showed or not
-        pi.CreateNoWindow = showConsole
 
         ' Add 'pi' infos to 'p' Process
         p.StartInfo = pi
