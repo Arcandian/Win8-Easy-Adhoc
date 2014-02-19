@@ -42,7 +42,10 @@ Public Class mainForm
                     ' in parameters, the name set in his TextBox, and same for the password
                     runCmd(setWLANInfos, cargs, cperm)
 
-                    ' Start an other console to execute a command which really start the hosted network
+                    ' Start an other console to execute a command which start the hosted network
+                    runCmd(startWLAN, cargs, cperm)
+                    ' Stop and restart same command for reload properly WLAN informations
+                    runCmd(stopWLAN, cargs, cperm)
                     runCmd(startWLAN, cargs, cperm)
 
                     ' Set a green label with a visual text indicates WLAN status
