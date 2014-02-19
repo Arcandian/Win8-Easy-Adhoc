@@ -8,7 +8,7 @@ Public Class mainForm
     Private cargs As String = ""
     Private startWLAN As String = "netsh wlan start hostednetwork"
     Private stopWLAN As String = "netsh wlan stop hostednetwork"
-    Private unsetWLANInfos As String = "netsh wlan set hostednetwork mode=disallow ssid=  key="
+    Private unsetWLANInfos As String = "netsh wlan set hostednetwork mode=disallow ssid= key="
 
     Private Sub mainForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
@@ -53,7 +53,7 @@ Public Class mainForm
                     lblStatus.Text = "WLAN '" & tbSSID.Text & "' is started !"
 
                     ' Set a new text in the Button indicates he can stop wlan creation process
-                    btnSwitchWLAN.Text = "Stop " & tbSSID.Text & " adhoc WLAN"
+                    btnSwitchWLAN.Text = "Stop '" & tbSSID.Text & "' adhoc WLAN"
 
                     ' Set TextBoxes in ReadOnly state
                     tbSSID.ReadOnly = True
@@ -76,7 +76,7 @@ Public Class mainForm
             End If
 
             ' If the Button text equals Stop action...
-        ElseIf btnSwitchWLAN.Text = "Stop " & tbSSID.Text & " adhoc WLAN" Then
+        ElseIf btnSwitchWLAN.Text = "Stop '" & tbSSID.Text & "' adhoc WLAN" Then
 
             ' Execute a command which stop the hosted network
             runCmd(stopWLAN, cargs, cperm)
@@ -169,7 +169,7 @@ Public Class mainForm
     ''' <param name="command">Command executed by cmd.exe</param>
     ''' <param name="args">Arguments used by the command</param>
     ''' <param name="ispermanent">If True, cmd.exe stay showed on the screen</param>
-    ''' <remarks>Inspirated by this topic : http://stackoverflow.com/questions/10261521/how-to-run-dos-cmd-command-prompt-commands-from-vb-net </remarks>
+    ''' <remarks>Inspirated by this topic : http://stackoverflow.com/questions/10261521/how-to-run-dos-cmd-command-prompt-commands-from-vb-net</remarks>
     Private Sub runCmd(command As String, args As String, ispermanent As Boolean)
 
         ' Create a new Process
@@ -183,6 +183,12 @@ Public Class mainForm
 
         ' Set executable filename for executes commands
         pi.FileName = "cmd.exe"
+
+        ' Raise a MessageBox if an error has occured
+        pi.ErrorDialog = True
+
+        ' Hide or not cmd.exe window
+        pi.WindowStyle = ProcessWindowStyle.Hidden
 
         ' Add 'pi' infos to 'p' Process
         p.StartInfo = pi
